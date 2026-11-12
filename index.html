@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strona w Pięciopodziale</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #08080a;
+            color: #fff;
+        }
+
+        .main-wrapper {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            width: 100vw;
+            padding: 10px;
+            gap: 10px;
+        }
+
+        /* NAWIGACJA GÓRNA */
+        .nav-bar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            height: 42px;
+            flex-shrink: 0;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.05);
+            color: #aaa;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            padding: 8px 18px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.9rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-btn:hover {
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .nav-btn.active {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #fff;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+
+        /* KONTENER PODSTRON */
+        .content-wrapper {
+            flex: 1;
+            position: relative;
+            width: 100%;
+            height: calc(100vh - 62px);
+        }
+
+        /* STRUKTURA PIĘCIOPODZIAŁU */
+        .page-tab {
+            display: none;
+            width: 100%;
+            height: 100%;
+            grid-template-columns: 260px 1fr 260px;
+            grid-template-rows: 48px 1fr 42px;
+            border: 3px solid #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+        }
+
+        .page-tab.active {
+            display: grid;
+        }
+
+        /* SEKCJE PIĘCIOPODZIAŁU */
+        .header-top {
+            grid-column: 1 / -1;
+            text-align: center;
+            font-weight: 800;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            border-bottom: 3px solid currentColor;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .sidebar-left {
+            grid-column: 1;
+            border-right: 3px solid currentColor;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .content-center {
+            grid-column: 2;
+            padding: 16px 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            text-align: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .sidebar-right {
+            grid-column: 3;
+            border-left: 3px solid currentColor;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .header-bottom {
+            grid-column: 1 / -1;
+            text-align: center;
+            font-size: 0.95rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Wyśrodkowanie napisu */
+            padding: 0 20px;
+            border-top: 3px solid currentColor;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        /* ELEMENTY WSPÓLNE MULTIMEDIALNE */
+        .section-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.7;
+            margin-bottom: 6px;
+            border-bottom: 1px dashed rgba(255,255,255,0.2);
+            padding-bottom: 3px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .tag-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            justify-content: center;
+        }
+
+        .tag {
+            font-size: 0.7rem;
+            padding: 3px 7px;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            padding: 6px 10px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-num {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .stat-desc {
+            font-size: 0.65rem;
+            opacity: 0.8;
+        }
+
+        .timeline-item {
+            font-size: 0.75rem;
+            text-align: left;
+            width: 100%;
+            padding-left: 8px;
+            border-left: 2px solid currentColor;
+            margin-bottom: 4px;
+        }
+
+        .svg-icon {
+            width: 32px;
+            height: 32px;
+            flex-shrink: 0;
+        }
+
+        .hero-svg {
+            width: 80px;
+            height: 80px;
+            filter: drop-shadow(0 6px 10px rgba(0,0,0,0.5));
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        p {
+            font-size: 0.82rem;
+            line-height: 1.35;
+        }
+
+        .badge {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* --- MOTYW 1: HALLOWEEN --- */
+        #halloween {
+            background: radial-gradient(circle at center, #2c123e 0%, #110519 100%);
+            border-color: #ff6600;
+            color: #ffaa44;
+        }
+        #halloween .header-top, #halloween .header-bottom {
+            color: #ff6600;
+            box-shadow: 0 0 15px rgba(255, 102, 0, 0.2);
+        }
+        #halloween h2 { color: #fff; text-shadow: 0 0 10px #ff6600; }
+        #halloween .badge { background: #ff6600; color: #000; }
+
+        /* --- MOTYW 2: WSZYSTKICH ŚWIĘTYCH --- */
+        #swietych {
+            background: radial-gradient(circle at center, #261e15 0%, #0d0a07 100%);
+            border-color: #d4af37;
+            color: #f0e6d2;
+        }
+        #swietych .header-top, #swietych .header-bottom {
+            color: #d4af37;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+        }
+        #swietych h2 { color: #fff; text-shadow: 0 0 10px #d4af37; }
+        #swietych .badge { background: #d4af37; color: #000; }
+
+        /* --- MOTYW 3: 11 LISTOPADA --- */
+        #niepodleglosc {
+            background: radial-gradient(circle at center, #2a1517 0%, #0f0809 100%);
+            border-color: #dc3545;
+            color: #ffffff;
+        }
+        #niepodleglosc .header-top, #niepodleglosc .header-bottom {
+            color: #dc3545;
+            box-shadow: 0 0 15px rgba(220, 53, 69, 0.2);
+        }
+        #niepodleglosc h2 { color: #fff; text-shadow: 0 0 10px #dc3545; }
+        #niepodleglosc .badge { background: #dc3545; color: #fff; }
+    </style>
+</head>
+<body>
+
+    <div class="main-wrapper">
+        
+        <!-- PRZYCISKI GÓRNE -->
+        <nav class="nav-bar">
+            <button class="nav-btn active" onclick="showTab('halloween', this)">
+                🎃 Halloween
+            </button>
+            <button class="nav-btn" onclick="showTab('swietych', this)">
+                🕯️ Wszystkich Świętych
+            </button>
+            <button class="nav-btn" onclick="showTab('niepodleglosc', this)">
+                🇵🇱 11 Listopada
+            </button>
+        </nav>
+
+        <div class="content-wrapper">
+
+            <!-- PODSTRONA 1: HALLOWEEN -->
+            <section id="halloween" class="page-tab active">
+                <header class="header-top">
+                    <span>🎃 Halloween</span>
+                    <span class="badge">31 Października</span>
+                </header>
+                
+                <aside class="sidebar-left">
+                    <div style="width:100%">
+                        <div class="section-title">Atrybuty</div>
+                        <div class="tag-cloud">
+                            <span class="tag">Dynie</span>
+                            <span class="tag">Nietoperze</span>
+                            <span class="tag">Duchy</span>
+                            <span class="tag">Maska</span>
+                            <span class="tag">Lampion</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-box">
+                        <div class="stat-num">Samhain</div>
+                        <div class="stat-desc">Celtycki rodowód święta</div>
+                    </div>
+
+                    <div style="width:100%">
+                        <div class="section-title">Zwyczaje</div>
+                        <p style="font-size:0.75rem;">• Trick or Treat</p>
+                        <p style="font-size:0.75rem;">• Drążenie dyni</p>
+                        <p style="font-size:0.75rem;">• Bal przebierańców</p>
+                    </div>
+                </aside>
+
+                <main class="content-center">
+                    <svg class="hero-svg" viewBox="0 0 64 64" fill="none">
+                        <path d="M32 12C18 12 8 22 8 36c0 14 10 20 24 20s24-6 24-20c0-14-10-24-24-24z" fill="#ff6600"/>
+                        <path d="M32 6c2 0 4 3 3 6h-2c0-3-1-6-1-6z" fill="#2d5a27"/>
+                        <path d="M20 30l6 6h-6v-6zm24 0l-6 6h6v-6zm-16 14l4-4 4 4 4-4 4 4h-20z" fill="#110519"/>
+                    </svg>
+                    <div>
+                        <h2>Noc Samhain i Cukierek albo Psikus</h2>
+                        <p>Tradycja wywodząca się z dawnego celtyckiego święta powitania zimy. Wierzono, że tej nocy zaciera się granica między światem żywych i umarłych.</p>
+                    </div>
+                    <div class="stat-box" style="background: rgba(255,102,0,0.1); border-color: #ff6600;">
+                        <span style="font-size:0.75rem;">Popularność: Drugie po Bożym Narodzeniu komercyjne święto na świecie.</span>
+                    </div>
+                </main>
+
+                <aside class="sidebar-right">
+                    <div style="width:100%">
+                        <div class="section-title">Fakty</div>
+                        <div class="timeline-item">
+                            <strong>Tradycja:</strong> Pierwotnie zamiast dyni drążono rzepę.
+                        </div>
+                        <div class="timeline-item">
+                            <strong>Kolory:</strong> Czarny (ciemność) i pomarańczowy (zbiory).
+                        </div>
+                    </div>
+
+                    <div class="stat-box">
+                        <div class="stat-num">Jack-o'-lantern</div>
+                        <div class="stat-desc">Nazwa lampionu</div>
+                    </div>
+
+                    <div style="width:100%">
+                        <div class="section-title">Ciekawostka</div>
+                        <p style="font-size:0.73rem;">Strach przed Halloween to samhainofobia.</p>
+                    </div>
+                </aside>
+
+                <footer class="header-bottom">
+                    Halloween
+                </footer>
+            </section>
+
+            <!-- PODSTRONA 2: WSZYSTKICH ŚWIĘTYCH -->
+            <section id="swietych" class="page-tab">
+                <header class="header-top">
+                    <span>🕯️ Wszystkich Świętych</span>
+                    <span class="badge">1 Listopada</span>
+                </header>
+
+                <aside class="sidebar-left">
+                    <div style="width:100%">
+                        <div class="section-title">Symbole</div>
+                        <div class="tag-cloud">
+                            <span class="tag">Znicze</span>
+                            <span class="tag">Chryzantemy</span>
+                            <span class="tag">Wieniec</span>
+                            <span class="tag">Modlitwa</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-box">
+                        <div class="stat-num">IX wiek</div>
+                        <div class="stat-desc">Ustanowienie przez papieża Grzegorza IV</div>
+                    </div>
+
+                    <div style="width:100%">
+                        <div class="section-title">Tradycja</div>
+                        <p style="font-size:0.75rem;">• Odwiedzanie grobów</p>
+                        <p style="font-size:0.75rem;">• Zapalanie światła</p>
+                        <p style="font-size:0.75rem;">• Zaduszki (2 XI)</p>
+                    </div>
+                </aside>
+
+                <main class="content-center">
+                    <svg class="hero-svg" viewBox="0 0 64 64" fill="none">
+                        <path d="M26 28h12v28H26z" fill="#d4af37" opacity="0.8"/>
+                        <path d="M32 8c4 8 8 12 8 16s-3.58 8-8 8-8-3.58-8-8 4-8 8-16z" fill="#ffaa00"/>
+                        <path d="M32 14c2 4 4 6 4 8s-1.79 4-4 4-4-1.79-4-4 2-4 4-8z" fill="#fff"/>
+                    </svg>
+                    <div>
+                        <h2>Dzień Zadumy i Pamięci</h2>
+                        <p>Uroczystość poświęcona pamięci o tych, którzy odeszli. Polskie nekropolie rozświetlają się tysiącami zniczy, tworząc niepowtarzalny i pełen refleksji klimat.</p>
+                    </div>
+                    <div class="stat-box" style="background: rgba(212,175,55,0.1); border-color: #d4af37;">
+                        <span style="font-size:0.75rem;">Pamięć: Symbol łączności między pokoleniami żywych i zmarłych.</span>
+                    </div>
+                </main>
+
+                <aside class="sidebar-right">
+                    <div style="width:100%">
+                        <div class="section-title">Znaczenie</div>
+                        <div class="timeline-item">
+                            <strong>Światło:</strong> Znak nadziei oraz życia wiecznego.
+                        </div>
+                        <div class="timeline-item">
+                            <strong>Kwiaty:</strong> Trwałość pamięci i szacunek.
+                        </div>
+                    </div>
+
+                    <div class="stat-box">
+                        <div class="stat-num">Nekropolie</div>
+                        <div class="stat-desc">Miejsca pamięci</div>
+                    </div>
+
+                    <div style="width:100%">
+                        <div class="section-title">Dni Pamięci</div>
+                        <p style="font-size:0.73rem;">1 Listopada — Uroczystość<br>2 Listopada — Dzień Zaduszny</p>
+                    </div>
+                </aside>
+
+                <footer class="header-bottom">
+                    Wszystkich Świętych
+                </footer>
+            </section>
+
+            <!-- PODSTRONA 3: 11 LISTOPADA -->
+            <section id="niepodleglosc" class="page-tab">
+                <header class="header-top">
+                    <span>🇵🇱 Narodowe Święto Niepodległości</span>
+                    <span class="badge">11 Listopada</span>
+                </header>
+
+                <aside class="sidebar-left">
+                    <div style="width:100%">
+                        <div class="section-title">Symbole</div>
+                        <div class="tag-cloud">
+                            <span class="tag">Flaga</span>
+                            <span class="tag">Godło</span>
+                            <span class="tag">Hymn</span>
+                            <span class="tag">Orzeł Biały</span>
+                            <span class="tag">Kotwica</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-box">
+                        <div class="stat-num">123 Lata</div>
+                        <div class="stat-desc">Czas trwania zaborów (1795–1918)</div>
+                    </div>
+
+                    <div style="width:100%">
+                        <div class="section-title">Obchody</div>
+                        <p style="font-size:0.75rem;">• Parada Niepodległości</p>
+                        <p style="font-size:0.75rem;">• Bieg Niepodległości</p>
+                        <p style="font-size:0.75rem;">• Wieszanie flag</p>
+                    </div>
+                </aside>
+
+                <main class="content-center">
+                    <svg class="hero-svg" viewBox="0 0 64 64" fill="none">
+                        <path d="M12 16h40v16H12z" fill="#ffffff"/>
+                        <path d="M12 32h40v16H12z" fill="#dc3545"/>
+                        <path d="M32 20l3 6h6l-5 4 2 6-6-4-6 4 2-6-5-4h6z" fill="#d4af37"/>
+                    </svg>
+                    <div>
+                        <h2>Odzyskanie Niepodległości (1918)</h2>
+                        <p>Upamiętnienie przywrócenia Polski na mapę świata po 123 latach zaborów pruskiego, rosyjskiego i austriackiego. Święto niezłomności i wolności narodowej.</p>
+                    </div>
+                    <div class="stat-box" style="background: rgba(220,53,69,0.1); border-color: #dc3545;">
+                        <span style="font-size:0.75rem;">Józef Piłsudski: Przejęcie władzy wojskowej w Warszawie w 1918 r.</span>
+                    </div>
+                </main>
+
+                <aside class="sidebar-right">
+                    <div style="width:100%">
+                        <div class="section-title">Kalendarium</div>
+                        <div class="timeline-item">
+                            <strong>1918:</strong> Odrodzenie Rzeczypospolitej.
+                        </div>
+                        <div class="timeline-item">
+                            <strong>1937:</strong> Oficjalne ustanowienie święta.
+                        </div>
+                    </div>
+
+                    <div class="stat-box">
+                        <div class="stat-num">1918 r.</div>
+                        <div class="stat-desc">Rok odzyskania wolności</div>
+                    </div>
+
+                    <div style="width:100%">
+                        <div class="section-title">Barwy Narodowe</div>
+                        <p style="font-size:0.73rem;">Biel — czystość i intencje<br>Czerwień — krew i odwaga</p>
+                    </div>
+                </aside>
+
+                <footer class="header-bottom">
+                    11 Listopada
+                </footer>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- SKRYPT DO PRZEŁĄCZANIA ZAKŁADEK -->
+    <script>
+        function showTab(tabId, btnElement) {
+            const tabs = document.querySelectorAll('.page-tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            const buttons = document.querySelectorAll('.nav-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(tabId).classList.add('active');
+            btnElement.classList.add('active');
+        }
+    </script>
+
+</body>
+</html>
